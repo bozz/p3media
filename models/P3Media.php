@@ -272,13 +272,20 @@ class P3Media extends BaseP3Media
      */
     public function createUrl($preset = null)
     {
+        if(in_array($preset, array('original', 'original-public'))) {
+            $originalNameSegs = explode('.', $this->original_name);
+            $extension = end($originalNameSegs);
+        } else {
+            $extension = Yii::app()->getModule('p3media')->params['presets'][$preset]['type'];
+        }
+
         return Yii::app()->controller->createUrl(
             '/p3media/file/image',
             array(
                  'id'        => $this->id,
                  'preset'    => $preset,
                  'title'     => !empty($this->title) ? $this->title : 'media',
-                 'extension' => '.' . Yii::app()->getModule('p3media')->params['presets'][$preset]['type']
+                 'extension' => '.' . $extension
             )
         );
     }
